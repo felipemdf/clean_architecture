@@ -1,10 +1,20 @@
 import { Module } from '@nestjs/common';
-import { EnvironmentConfigModule } from './infra/config/environment/environment-config.module';
-import { TypeOrmConfigModule } from './infra/database/typeorm/typeOrmConfigModule';
-import { UserModule } from './infra/IoC/user.module';
+import { ConfigModule } from '@nestjs/config';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { TypeORMService } from 'src/config/database/typeORM.service';
+import { UserModule } from './modules/user/user.module';
 
 @Module({
-  imports: [TypeOrmConfigModule, EnvironmentConfigModule, UserModule],
+  imports: [
+    ConfigModule.forRoot({
+      envFilePath: '.env.example',
+      isGlobal: true
+    }),
+    TypeOrmModule.forRootAsync({
+      useClass: TypeORMService
+    }),
+    UserModule
+  ],
   controllers: [],
   providers: [],
 })
